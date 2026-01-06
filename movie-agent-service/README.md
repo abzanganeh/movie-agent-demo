@@ -262,7 +262,7 @@ This is a demo version using a limited movie dataset (CSV). Results may not incl
 
 ## License
 
-[Add your license here]
+This project is licensed under the MIT License - see the [LICENSE](../LICENSE) file for details.
 
 ## Author
 
