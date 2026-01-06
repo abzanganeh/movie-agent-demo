@@ -230,7 +230,7 @@ Error responses include a JSON body:
 ### Project Structure
 
 ```
-movie-agent-api/
+movie-agent-demo/
 ├── app.py              # Flask application
 ├── config_manager.py  # Secure configuration management
 ├── templates/         # HTML templates
