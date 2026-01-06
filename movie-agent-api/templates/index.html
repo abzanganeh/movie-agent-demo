@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Agent Service</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Movie Agent Service</h1>
+            <p class="subtitle">Intelligent movie recommendations and analysis</p>
+            <div style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 4px; padding: 10px; margin: 10px 0; text-align: center; font-size: 0.9em; color: #856404;">
+                <strong>Demo Version:</strong> This project uses a small movie dataset (CSV) for demonstration purposes only. 
+                Results may be limited compared to a full production database.
+            </div>
+            <div style="text-align: right; margin-top: 10px;">
+                <button onclick="resetConfig()" style="padding: 8px 16px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9em;">
+                    Reset Config
+                </button>
+            </div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('chat')">Chat</button>
+            <button class="tab-button" onclick="switchTab('image')">Image Analysis</button>
+        </div>
+
+        <!-- Chat Tab -->
+        <div id="chat-tab" class="tab-content active">
+            <div class="chat-container">
+                <div id="chat-messages" class="chat-messages"></div>
+                <div class="chat-input-container">
+                    <input 
+                        type="text" 
+                        id="chat-input" 
+                        placeholder="Ask me about movies, quizzes, comparisons, or statistics..."
+                        onkeypress="handleChatKeyPress(event)"
+                    >
+                    <button onclick="sendChatMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Image Analysis Tab -->
+        <div id="image-tab" class="tab-content">
+            <div class="image-container">
+                <div class="upload-area" id="upload-area">
+                    <input 
+                        type="file" 
+                        id="image-input" 
+                        accept="image/*" 
+                        onchange="handleImageSelect(event)"
+                        style="display: none;"
+                    >
+                    <div class="upload-placeholder">
+                        <p>Click to upload or drag and drop</p>
+                        <p class="upload-hint">Supports: JPG, PNG, JPEG</p>
+                        <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; text-align: left; max-width: 600px; margin-left: auto; margin-right: auto;">
+                            <h3 style="margin-top: 0; color: #667eea;">What to Upload</h3>
+                            <p style="margin: 10px 0;"><strong>Upload movie posters</strong> to identify the movie, analyze its mood, and get genre information.</p>
+                            <ul style="margin: 10px 0; padding-left: 20px;">
+                                <li>Best results with clear, high-quality movie poster images</li>
+                                <li>The system will identify the movie title, analyze visual elements, and infer genres</li>
+                                <li>After analysis, you can ask questions about the movie in the Chat tab</li>
+                            </ul>
+                            <p style="margin: 10px 0 0 0; font-size: 0.9em; color: #666;">The analysis uses computer vision to extract visual features and match them with the movie database.</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="image-preview" class="image-preview" style="display: none;">
+                    <img id="preview-img" src="" alt="Preview">
+                    <div class="image-actions">
+                        <button onclick="analyzeImage()" class="analyze-button">Analyze Poster</button>
+                        <button onclick="resetImagePreview()" class="clear-button">Clear & Upload New</button>
+                    </div>
+                </div>
+                <div id="image-results" class="image-results"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
+
