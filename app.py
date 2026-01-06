@@ -20,17 +20,25 @@ from dotenv import load_dotenv
 # Add movie-agent-service to path
 # Note: movie-agent-service should be installed or cloned as a sibling directory
 try:
+    # Get absolute path of this file
     current_file = Path(__file__).resolve()
+    # Try parent directory (sibling to movie-agent-service)
     service_path = current_file.parent.parent / "movie-agent-service" / "src"
-    # Fallback: try current directory if parent doesn't exist
+    # Fallback: try same directory
     if not service_path.exists():
         service_path = current_file.parent / "movie-agent-service" / "src"
+    # Add to path if it exists
     if service_path.exists():
-        sys.path.insert(0, str(service_path))
-except Exception as e:
-    # Fallback: use environment variable or relative path
+        sys.path.insert(0, str(service_path.resolve()))
+except (OSError, ValueError) as e:
+    # Fallback: use os.path for compatibility
     import os
-    service_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "movie-agent-service", "src")
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    # Try parent directory
+    service_path = os.path.join(os.path.dirname(base_dir), "movie-agent-service", "src")
+    if not os.path.exists(service_path):
+        # Try same directory
+        service_path = os.path.join(base_dir, "movie-agent-service", "src")
     if os.path.exists(service_path):
         sys.path.insert(0, os.path.abspath(service_path))
 
