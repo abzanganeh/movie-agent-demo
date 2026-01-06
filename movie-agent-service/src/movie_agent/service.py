@@ -181,6 +181,9 @@ class MovieAgentService:
         intent_context = ""
         if intent == AgentIntent.CORRECTION:
             intent_context = "\n[IMPORTANT: User is providing feedback/correction. Acknowledge the correction conversationally. Do NOT call any tools, especially NOT check_quiz_answer. Just acknowledge and ask how to help further.]"
+        elif intent == AgentIntent.QUIZ_NEXT:
+            # User wants next question - serve it without calling any tools
+            intent_context = "\n[IMPORTANT: User wants to continue to the next quiz question. DO NOT call any tools. Just acknowledge and indicate the next question will be shown.]"
         elif intent == AgentIntent.QUIZ_ANSWER and not quiz_state.is_active():
             intent_context = "\n[IMPORTANT: User appears to be answering a quiz, but no quiz is active. Politely inform them that no quiz is currently running and ask if they'd like to start one.]"
         elif intent == AgentIntent.QUIZ_ANSWER and quiz_state.is_active():

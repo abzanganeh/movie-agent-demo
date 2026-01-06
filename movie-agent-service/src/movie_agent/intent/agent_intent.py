@@ -20,6 +20,7 @@ class AgentIntent(str, Enum):
     MOVIE_COMPARISON = "movie_comparison"
     QUIZ_START = "quiz_start"
     QUIZ_ANSWER = "quiz_answer"
+    QUIZ_NEXT = "quiz_next"
     ACTOR_LOOKUP = "actor_lookup"
     DIRECTOR_LOOKUP = "director_lookup"
     YEAR_LOOKUP = "year_lookup"
@@ -39,6 +40,7 @@ class AgentIntent(str, Enum):
             cls.MOVIE_COMPARISON: "compare_movies",
             cls.QUIZ_START: "generate_movie_quiz",
             cls.QUIZ_ANSWER: "check_quiz_answer",
+            cls.QUIZ_NEXT: None,  # No tool - handled in service layer
             cls.ACTOR_LOOKUP: "search_actor",
             cls.DIRECTOR_LOOKUP: "search_director",
             cls.YEAR_LOOKUP: "search_year",
@@ -83,7 +85,14 @@ def detect_intent(user_input: str, quiz_active: bool = False) -> AgentIntent:
     
     # Quiz-related intents (state-aware)
     if quiz_active:
-        # Any input while in quiz mode → quiz answer
+        # Navigation phrases - advance to next question
+        next_patterns = [
+            r'\b(next|next one|next question|continue|skip|move on|proceed|go to next)\b',
+            r'^(next|continue|skip)$',
+        ]
+        if any(re.search(pattern, text) for pattern in next_patterns):
+            return AgentIntent.QUIZ_NEXT  # User wants next question
+        
         # Exception: explicit quiz start request
         if re.search(r'\b(play|quiz|trivia|game|start game|new quiz|another quiz)\b', text):
             return AgentIntent.QUIZ_START  # User wants to start a new quiz
