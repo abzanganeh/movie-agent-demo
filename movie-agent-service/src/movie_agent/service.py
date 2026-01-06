@@ -145,6 +145,13 @@ class MovieAgentService:
         
         intent = detect_intent(user_message, quiz_active=quiz_state.is_active())
         
+        # Handle QUIZ_NEXT intent - advance to next question without calling tools
+        if intent == AgentIntent.QUIZ_NEXT and quiz_state.is_active():
+            # Advance to next question if available
+            if not quiz_state.is_complete():
+                quiz_state.advance_to_next_question()
+            # Return response with next question (handled in quiz_data logic below)
+        
         if intent == AgentIntent.CHIT_CHAT:
             greeting_responses = {
                 "hi": "Hi! I can help you with movies, quizzes, comparisons, and statistics.",
