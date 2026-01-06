@@ -29,11 +29,16 @@ This Flask application provides a web interface and REST API for the Movie Agent
 ### Installation
 
 ```bash
+# Clone the movie-agent-service repository (sibling directory)
+cd ..
+git clone https://github.com/abzanganeh/movie-agent-service.git
+cd movie-agent-demo
+
 # Install dependencies
 pip install -r requirements.txt
 
 # Set PYTHONPATH to include movie-agent-service
-export PYTHONPATH=./movie-agent-service/src:$PYTHONPATH
+export PYTHONPATH=../movie-agent-service/src:$PYTHONPATH
 
 # Run the Flask app
 python app.py
