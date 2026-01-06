@@ -18,7 +18,7 @@ from flask import Flask, request, jsonify, render_template, redirect, url_for, s
 from dotenv import load_dotenv
 
 # Add movie-agent-service to path
-service_path = Path(__file__).parent.parent / "movie-agent-service" / "src"
+service_path = Path(__file__).parent / "movie-agent-service" / "src"
 sys.path.insert(0, str(service_path))
 
 # Public API imports only
