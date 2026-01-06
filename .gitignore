@@ -86,3 +86,6 @@ config.encrypted
 temp/
 **/temp/
 
+# Separate repository (movie-agent-service has its own git repo)
+movie-agent-service/
+
