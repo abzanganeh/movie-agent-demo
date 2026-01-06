@@ -19,28 +19,12 @@ from dotenv import load_dotenv
 
 # Add movie-agent-service to path
 # Note: movie-agent-service should be installed or cloned as a sibling directory
-try:
-    # Get absolute path of this file
-    current_file = Path(__file__).resolve()
-    # Try parent directory (sibling to movie-agent-service)
-    service_path = current_file.parent.parent / "movie-agent-service" / "src"
-    # Fallback: try same directory
-    if not service_path.exists():
-        service_path = current_file.parent / "movie-agent-service" / "src"
-    # Add to path if it exists
-    if service_path.exists():
-        sys.path.insert(0, str(service_path.resolve()))
-except (OSError, ValueError) as e:
-    # Fallback: use os.path for compatibility
-    import os
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    # Try parent directory
-    service_path = os.path.join(os.path.dirname(base_dir), "movie-agent-service", "src")
-    if not os.path.exists(service_path):
-        # Try same directory
-        service_path = os.path.join(base_dir, "movie-agent-service", "src")
-    if os.path.exists(service_path):
-        sys.path.insert(0, os.path.abspath(service_path))
+from path_resolver import ServicePathResolver
+
+path_resolver = ServicePathResolver(__file__)
+if not path_resolver.add_to_sys_path():
+    logger = logging.getLogger(__name__)
+    logger.warning("movie-agent-service not found in expected locations. Please ensure it's cloned as a sibling directory.")
 
 # Public API imports only
 from movie_agent.app import MovieAgentApp
