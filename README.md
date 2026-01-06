@@ -33,7 +33,7 @@ This Flask application provides a web interface and REST API for the Movie Agent
 pip install -r requirements.txt
 
 # Set PYTHONPATH to include movie-agent-service
-export PYTHONPATH=../movie-agent-service/src:$PYTHONPATH
+export PYTHONPATH=./movie-agent-service/src:$PYTHONPATH
 
 # Run the Flask app
 python app.py
