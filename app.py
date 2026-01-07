@@ -18,13 +18,8 @@ from flask import Flask, request, jsonify, render_template, redirect, url_for, s
 from dotenv import load_dotenv
 
 # Add movie-agent-service to path
-# Note: movie-agent-service should be installed or cloned as a sibling directory
-from path_resolver import ServicePathResolver
-
-path_resolver = ServicePathResolver(__file__)
-if not path_resolver.add_to_sys_path():
-    logger = logging.getLogger(__name__)
-    logger.warning("movie-agent-service not found in expected locations. Please ensure it's cloned as a sibling directory.")
+service_path = Path(__file__).parent.parent / "movie-agent-service" / "src"
+sys.path.insert(0, str(service_path))
 
 # Public API imports only
 from movie_agent.app import MovieAgentApp

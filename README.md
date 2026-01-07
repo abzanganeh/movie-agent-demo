@@ -1,101 +1,76 @@
-# Movie Agent API
+# Movie Agent Demo
 
-Flask REST API with Web UI for Movie Agent Service.
+Flask REST API and web interface for the Movie Agent Service.
 
 **Author:** Alireza Barzin Zanganeh  
 **Website:** [zanganehai.com](https://www.zanganehai.com/about)
 
 ## Overview
 
-This Flask application provides a web interface and REST API for the Movie Agent Service. It offers an intuitive UI for movie queries and poster analysis, along with programmatic API endpoints.
+This Flask application provides a web interface and REST API for the Movie Agent Service. It offers an interactive UI for movie queries, poster analysis, and programmatic API endpoints.
 
 ## Features
 
-- **Web UI**: Interactive chat interface and image analysis
-- **REST API**: Programmatic access to all service features
-- **Secure Configuration**: Encrypted API key storage
-- **Session Management**: Isolated user sessions with memory
-- **Intent Routing**: Automatic query classification
+- Web UI with chat interface and image analysis
+- REST API for programmatic access
+- Encrypted API key storage
+- Session-based memory isolation
+- Automatic query classification
 
 ## Quick Start
 
 ### Prerequisites
 
-- Python 3.10 or higher
-- Movie Agent Service installed (see parent directory)
-- OpenAI API key (required)
-- LLM API key (Groq or OpenAI)
+- Python 3.10+
+- Movie Agent Service (parent directory)
+- OpenAI API key (required for embeddings)
+- Groq or OpenAI API key (for LLM)
 
 ### Installation
 
 ```bash
-# Clone the movie-agent-service repository (sibling directory)
-cd ..
-git clone https://github.com/abzanganeh/movie-agent-service.git
-cd movie-agent-demo
-
-# Install dependencies
 pip install -r requirements.txt
 
-# Set PYTHONPATH to include movie-agent-service
 export PYTHONPATH=../movie-agent-service/src:$PYTHONPATH
 
-# Run the Flask app
 python app.py
 ```
 
-The application will start on `http://localhost:8765`
+The application runs on `http://localhost:8765` by default.
 
 ## First-Time Setup
 
-On first launch, you'll be guided through a setup wizard:
+On first launch, you'll see a setup wizard:
 
-1. **LLM Provider**: Choose Groq (recommended) or OpenAI
-2. **API Keys**: Enter your API keys securely
-   - OpenAI API key (required for embeddings)
-   - Groq API key (if using Groq for LLM)
-   - OpenAI LLM key (if using OpenAI for LLM)
-3. **Optional Settings**: Configure vision, fuzzy matching, etc.
+1. Choose LLM provider (Groq or OpenAI)
+2. Enter API keys (encrypted and stored locally)
+3. Configure optional settings (vision, fuzzy matching, etc.)
 
-**Security:**
-- API keys are encrypted and stored locally
-- Keys are never exposed in logs or responses
-- Configuration files are gitignored
-
-**Reset Configuration:**
-- Click "Reset Config" in the UI, or
-- Delete `config.encrypted` and `.master_key` files
+Configuration files (`config.encrypted` and `.master_key`) are gitignored and never exposed in logs or responses. To reset configuration, delete these files or use the "Reset Config" button in the UI.
 
 ## Web UI
 
-### Chat Tab
+### Chat Interface
 
-Interactive chat interface for movie queries:
+The chat interface supports:
 - Natural language movie search
-- Movie recommendations
-- Interactive quizzes (one question at a time)
-- Movie comparisons
-- Actor/director/year searches
+- Recommendations and queries
+- Interactive quizzes
+- Rating comparisons (shows top-rated movies by category)
+- Actor, director, and year searches
+- Statistics queries with formatted output
 
-### Image Analysis Tab
+### Image Analysis
 
-Upload and analyze movie posters:
-- **What to Upload**: Movie poster images (JPG, PNG, JPEG)
-- **Best Results**: Clear, high-quality poster images
-- **Analysis Output**: Movie title, mood, genres, confidence score
-- After analysis, ask questions about the movie in the Chat tab
+Upload movie poster images (JPG, PNG, JPEG) to:
+- Identify the movie title
+- Analyze visual mood and themes
+- Infer genres from visual elements
+- Get confidence scores
 
-The system uses computer vision to extract visual features and match them with the movie database.
+After analysis, you can ask questions about the movie in the chat interface.
 
 ## API Endpoints
-
-### GET /
-
-Serves the web UI homepage.
-
-**Response:** HTML page
-
----
 
 ### POST /chat
 
@@ -118,45 +93,15 @@ Send a chat query to the agent.
   "tool_latency_ms": 320,
   "latency_ms": 770,
   "reasoning_type": "tool_calling",
-  "confidence": 0.9,
   "quiz_data": null
 }
 ```
-
-**Quiz Response (when quiz is active):**
-```json
-{
-  "answer": "Question 1 of 3:",
-  "quiz_data": {
-    "quiz_active": true,
-    "question_id": 1,
-    "question": "What year was \"The Matrix\" released?",
-    "options": ["1999", "1998", "2000"],
-    "progress": {
-      "current": 1,
-      "total": 3
-    },
-    "topic": "movies",
-    "mode": "random"
-  }
-}
-```
-
-**Status Codes:**
-- `200`: Success
-- `400`: Bad request (missing query)
-- `500`: Server error
-- `503`: Service not configured
-
----
 
 ### POST /poster
 
 Analyze a movie poster image.
 
-**Request:**
-- Content-Type: `multipart/form-data`
-- Form field: `image` (file)
+**Request:** `multipart/form-data` with `image` field
 
 **Response:**
 ```json
@@ -169,110 +114,64 @@ Analyze a movie poster image.
 }
 ```
 
-**Status Codes:**
-- `200`: Success
-- `400`: Bad request (no image provided)
-- `500`: Server error
-- `503`: Service not configured
-
----
-
-### GET /health
-
-Health check endpoint.
-
-**Response:**
-```json
-{
-  "status": "healthy",
-  "configured": true
-}
-```
-
-**Status Codes:**
-- `200`: Service is healthy
-- `503`: Service not configured
-
----
-
 ### POST /reset-config
 
 Reset configuration (requires authentication in production).
 
-**Response:**
-```json
-{
-  "status": "success",
-  "message": "Configuration reset"
-}
-```
+## Statistics Display
+
+Statistics responses are automatically formatted in the UI:
+- Top rated movies (ranked list)
+- Highest/lowest rated movies
+- Average ratings with counts
+- Genre distributions
+
+When using the API programmatically, statistics are returned as formatted text in the `answer` field. You can detect statistics responses by checking the `tools_used` field for `get_movie_statistics`.
 
 ## Session Management
 
-The API uses Flask sessions to manage user state:
-- Each browser session gets a unique session ID
-- Session state includes:
-  - Conversation history
-  - Quiz state (active questions, score)
-  - Poster context (last analyzed poster)
+The API uses Flask sessions for state management:
+- Unique session ID per browser session
+- Conversation history
+- Quiz state (questions, score)
+- Poster context (last analyzed poster)
 
 ## Error Handling
 
 All endpoints return appropriate HTTP status codes:
-- `400`: Client error (bad request)
-- `500`: Server error (internal error)
-- `503`: Service unavailable (not configured)
+- `200`: Success
+- `400`: Bad request
+- `500`: Server error
+- `503`: Service not configured
 
-Error responses include a JSON body:
-```json
-{
-  "error": "Error message description"
-}
-```
+Error responses include JSON with an `error` field describing the issue.
 
 ## Development
 
 ### Project Structure
 
 ```
-movie-agent-demo/ (repository root)
+movie-agent-demo/
 ├── app.py              # Flask application
-├── config_manager.py  # Secure configuration management
+├── config_manager.py  # Configuration management
 ├── templates/         # HTML templates
-│   ├── index.html    # Main UI
-│   └── setup.html    # Setup wizard
-├── static/           # Static assets
-│   ├── script.js     # Frontend JavaScript
-│   └── style.css     # Styles
+├── static/           # CSS and JavaScript
 └── logs/             # Application logs
 ```
 
 ### Running in Development
 
 ```bash
-# Enable debug mode
 export FLASK_DEBUG=1
 python app.py
 ```
 
-### Logging
-
-Logs are written to `logs/flask_app_YYYYMMDD.log`:
-- Request/response logging
-- Error tracking
-- Performance metrics
+Logs are written to `logs/flask_app_YYYYMMDD.log` with request/response details, errors, and performance metrics.
 
 ## Limitations
 
-This is a demo version using a limited movie dataset. Results may not include all movies compared to a full production database.
+This demo uses a limited movie dataset. Results may not include all movies compared to a production database.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](../LICENSE) file for details.
-
-## Author
-
-**Alireza Barzin Zanganeh**  
-Software Engineer | ML Engineer | GenAI Practitioner
-
-For more information, visit [zanganehai.com](https://www.zanganehai.com/about)
+MIT License - see LICENSE file for details.

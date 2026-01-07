@@ -34,6 +34,12 @@ function addChatMessage(role, content, metadata = null) {
                           content.includes('Great job') || content.includes("Let's try"))) {
         // Show feedback even without quiz_data (feedback-only message)
         html += renderQuizContent(null, content);
+    } else if (content && (content.includes('Highest Rated') || 
+                          content.includes('Top') && content.includes('Rated') || 
+                          content.includes('Average Rating') ||
+                          content.includes('Genre Distribution') ||
+                          content.includes('Lowest Rated'))) {
+        html += renderStatisticsContent(content);
     } else {
         html += `<div class="message-content">${escapeHtml(content)}</div>`;
     }
@@ -79,10 +85,11 @@ function renderQuizContent(quizData, answerText) {
     
     // If no quizData but we have answerText with feedback, show it
     if (!quizData && answerText) {
-        const isFeedback = answerText.includes('Correct') || answerText.includes('Incorrect') ||
-                          answerText.includes('Great job') || answerText.includes("Let's try");
+        const isFeedback = answerText.includes('Correct') || answerText.includes('Incorrect');
         if (isFeedback) {
-            html += `<div class="quiz-feedback">${escapeHtml(answerText)}</div>`;
+            const isCorrect = answerText.includes('Correct');
+            const feedbackClass = isCorrect ? 'quiz-feedback correct' : 'quiz-feedback incorrect';
+            html += `<div class="${feedbackClass}">${escapeHtml(answerText)}</div>`;
             html += '</div>';
             return html;
         }
@@ -142,6 +149,121 @@ function renderQuizContent(quizData, answerText) {
         if (!quizData || (quizData && (quizData.quiz_complete || !quizData.quiz_active))) {
             html += `<div class="message-content">${escapeHtml(answerText)}</div>`;
         }
+    }
+    
+    html += '</div>';
+    return html;
+}
+
+function renderStatisticsContent(content) {
+    // Parse statistics content and render beautifully
+    let html = '<div class="statistics-container">';
+    
+    // Check for different statistics types
+    if (content.includes('Highest Rated Movies:')) {
+        html += '<div class="statistics-header">Highest Rated Movies</div>';
+        const movieMatch = content.match(/Highest Rated Movies:\n\n([\s\S]*?)\n\nRating:/);
+        if (movieMatch) {
+            const movies = movieMatch[1].split('\n').filter(line => line.trim().startsWith('•'));
+            html += '<div class="statistics-list">';
+            movies.forEach(movie => {
+                const match = movie.match(/•\s*(.+?)\s*\((\d+)\)\s*-\s*Rating:\s*([\d.]+)\/10/);
+                if (match) {
+                    const [, title, year, rating] = match;
+                    html += `
+                        <div class="statistics-item">
+                            <div class="statistics-title">${escapeHtml(title)} (${year})</div>
+                            <div class="statistics-rating">⭐ ${rating}/10</div>
+                        </div>
+                    `;
+                }
+            });
+            html += '</div>';
+            const ratingMatch = content.match(/Rating:\s*([\d.]+)\/10/);
+            if (ratingMatch) {
+                html += `<div class="statistics-summary">Highest Rating: ${ratingMatch[1]}/10</div>`;
+            }
+        }
+    } else if (content.includes('Top') && content.includes('Highest Rated Movies:')) {
+        html += '<div class="statistics-header">Top Rated Movies</div>';
+        const topMatch = content.match(/Top (\d+) Highest Rated Movies:\n\n([\s\S]*)/);
+        if (topMatch) {
+            const [, count, moviesText] = topMatch;
+            html += `<div class="statistics-subheader">Top ${count} Movies by Rating</div>`;
+            const movies = moviesText.split('\n').filter(line => line.trim().match(/^\d+\./));
+            html += '<div class="statistics-list">';
+            movies.forEach(movie => {
+                const match = movie.match(/(\d+)\.\s*(.+?)\s*\((\d+)\)\s*-\s*Rating:\s*([\d.]+)\/10/);
+                if (match) {
+                    const [, rank, title, year, rating] = match;
+                    html += `
+                        <div class="statistics-item">
+                            <div class="statistics-rank">#${rank}</div>
+                            <div class="statistics-content">
+                                <div class="statistics-title">${escapeHtml(title)} (${year})</div>
+                                <div class="statistics-rating">⭐ ${rating}/10</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            html += '</div>';
+        }
+    } else if (content.includes('Average Rating:')) {
+        html += '<div class="statistics-header">Average Rating</div>';
+        const match = content.match(/Average Rating:\s*([\d.]+)\/10\s*\(based on (\d+) movies\)/);
+        if (match) {
+            const [, avg, count] = match;
+            html += `
+                <div class="statistics-summary">
+                    <div class="statistics-value">${avg}/10</div>
+                    <div class="statistics-label">Based on ${count} movies</div>
+                </div>
+            `;
+        }
+    } else if (content.includes('Lowest Rated Movies:')) {
+        html += '<div class="statistics-header">Lowest Rated Movies</div>';
+        const movieMatch = content.match(/Lowest Rated Movies:\n\n([\s\S]*?)\n\nRating:/);
+        if (movieMatch) {
+            const movies = movieMatch[1].split('\n').filter(line => line.trim().startsWith('•'));
+            html += '<div class="statistics-list">';
+            movies.forEach(movie => {
+                const match = movie.match(/•\s*(.+?)\s*\((\d+)\)\s*-\s*Rating:\s*([\d.]+)\/10/);
+                if (match) {
+                    const [, title, year, rating] = match;
+                    html += `
+                        <div class="statistics-item">
+                            <div class="statistics-title">${escapeHtml(title)} (${year})</div>
+                            <div class="statistics-rating">⭐ ${rating}/10</div>
+                        </div>
+                    `;
+                }
+            });
+            html += '</div>';
+        }
+    } else if (content.includes('Genre Distribution:')) {
+        html += '<div class="statistics-header">Genre Distribution</div>';
+        const genreMatch = content.match(/Genre Distribution:\n\n([\s\S]*)/);
+        if (genreMatch) {
+            const genres = genreMatch[1].split('\n').filter(line => line.trim().startsWith('•'));
+            html += '<div class="statistics-list">';
+            genres.forEach(genre => {
+                const match = genre.match(/•\s*(.+?):\s*(\d+)/);
+                if (match) {
+                    const [, name, count] = match;
+                    html += `
+                        <div class="statistics-item">
+                            <div class="statistics-title">${escapeHtml(name)}</div>
+                            <div class="statistics-count">${count} movies</div>
+                        </div>
+                    `;
+                }
+            });
+            html += '</div>';
+        }
+    } else {
+        // Fallback: render as plain text with formatting preserved
+        html += `<div class="message-content">${escapeHtml(content).replace(/\n/g, '<br>')}</div>`;
     }
     
     html += '</div>';

@@ -251,13 +251,13 @@ header h1 {
     font-size: 1.05em;
 }
 
-.quiz-feedback:has-text("✅") {
+.quiz-feedback.correct {
     background: #d4edda;
     border: 1px solid #c3e6cb;
     color: #155724;
 }
 
-.quiz-feedback:has-text("❌") {
+.quiz-feedback.incorrect {
     background: #f8d7da;
     border: 1px solid #f5c6cb;
     color: #721c24;
@@ -518,5 +518,113 @@ header h1 {
 
 .chat-messages::-webkit-scrollbar-thumb:hover {
     background: #555;
+}
+
+/* Statistics/Ratings Styles */
+.statistics-container {
+    margin: 10px 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.statistics-header {
+    font-size: 1.4em;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #667eea;
+}
+
+.statistics-subheader {
+    font-size: 1em;
+    color: #666;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+.statistics-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.statistics-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    transition: all 0.2s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.statistics-item:hover {
+    border-color: #667eea;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+    transform: translateX(3px);
+}
+
+.statistics-rank {
+    font-size: 1.2em;
+    font-weight: 700;
+    color: #667eea;
+    min-width: 40px;
+    text-align: center;
+    margin-right: 15px;
+}
+
+.statistics-content {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.statistics-title {
+    font-size: 1.05em;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.statistics-rating {
+    font-size: 1.1em;
+    font-weight: 700;
+    color: #f39c12;
+    white-space: nowrap;
+    margin-left: 15px;
+}
+
+.statistics-count {
+    font-size: 0.95em;
+    color: #666;
+    font-weight: 500;
+}
+
+.statistics-summary {
+    margin-top: 15px;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    text-align: center;
+    border: 2px solid #667eea;
+}
+
+.statistics-value {
+    font-size: 2em;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 5px;
+}
+
+.statistics-label {
+    font-size: 0.9em;
+    color: #666;
 }
 
