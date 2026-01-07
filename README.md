@@ -9,6 +9,8 @@ Flask REST API and web interface for the Movie Agent Service.
 
 This Flask application provides a web interface and REST API for the Movie Agent Service. It offers an interactive UI for movie queries, poster analysis, and programmatic API endpoints.
 
+This demo application is designed to work with the **tool-calling agent architecture** of the Movie Agent Service, not ReAct. See the [Movie Agent Service README](../movie-agent-service/README.md) for details on why tool-calling agent architecture was chosen over ReAct for production-grade reliability.
+
 ## Features
 
 - Web UI with chat interface and image analysis
