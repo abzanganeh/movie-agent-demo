@@ -15,10 +15,7 @@
                 <strong>Demo Version:</strong> This project uses a small movie dataset (CSV) for demonstration purposes only. 
                 Results may be limited compared to a full production database.
             </div>
-            <div style="text-align: right; margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
-                <a href="{{ url_for('about') }}" style="color: #3498db; text-decoration: none; font-weight: bold; font-size: 0.95em;">
-                    About This Project
-                </a>
+            <div style="text-align: right; margin-top: 10px;">
                 <button onclick="resetConfig()" style="padding: 8px 16px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9em;">
                     Reset Config
                 </button>
@@ -28,6 +25,7 @@
         <div class="tabs">
             <button class="tab-button active" onclick="switchTab('chat')">Chat</button>
             <button class="tab-button" onclick="switchTab('image')">Image Analysis</button>
+            <button class="tab-button tab-button-about" onclick="switchTab('about')">About</button>
         </div>
 
         <!-- Chat Tab -->
@@ -80,6 +78,121 @@
                     </div>
                 </div>
                 <div id="image-results" class="image-results"></div>
+            </div>
+        </div>
+
+        <!-- About Tab -->
+        <div id="about-tab" class="tab-content">
+            <div style="max-width: 900px; margin: 0 auto; padding: 20px; line-height: 1.6; overflow-y: auto; max-height: calc(100vh - 200px);">
+                <div style="margin-bottom: 30px;">
+                    <h2 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-top: 0;">Project Overview</h2>
+                    <p>This is not just a "prompt + LLM" demo. It is a well-structured agent-based system designed with production-minded principles.</p>
+                    
+                    <p>
+                        <strong>🔹 Movie Agent Service (Backend / Agent Layer):</strong><br>
+                        <a href="https://github.com/abzanganeh/movie-agent-service" target="_blank" style="color: #3498db; text-decoration: none;">https://github.com/abzanganeh/movie-agent-service</a>
+                    </p>
+                    
+                    <p>
+                        <strong>🔹 Movie Agent Demo (Flask App / UI Layer):</strong><br>
+                        <a href="https://github.com/abzanganeh/movie-agent-demo" target="_blank" style="color: #3498db; text-decoration: none;">https://github.com/abzanganeh/movie-agent-demo</a>
+                    </p>
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <h2 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-top: 30px;">Architecture Highlights</h2>
+                    
+                    <h3 style="color: #34495e; margin-top: 25px;">Our Architecture Flow</h3>
+                    <div style="background: #f8f9fa; border-left: 4px solid #3498db; padding: 15px; margin: 20px 0; font-family: 'Courier New', monospace; font-size: 0.9em;">
+User<br>
+ ↓<br>
+Service (rules + state management)<br>
+ ↓<br>
+Agent (LLM reasoning with tool selection)<br>
+ ↓<br>
+Tools (execution)<br>
+ ↓<br>
+Service (state update + validation)<br>
+ ↓<br>
+Response
+                    </div>
+                    <p>Instead of the simpler but more fragile: <code>User → LLM → Tool → Response</code></p>
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <h2 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-top: 30px;">Why Tool-Calling Agent Instead of ReAct?</h2>
+                    
+                    <p>We chose <strong>tool-calling agent architecture</strong> over ReAct for production-grade reliability and maintainability. This is an intentional design choice, not a limitation.</p>
+
+                    <div style="background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 20px 0;">
+                        <h3 style="margin-top: 0;">Key Advantages:</h3>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>Service controls rules and state:</strong> Business logic lives in code, not prompts</li>
+                            <li><strong>Predictable behavior:</strong> Clear tool mapping and explicit constraints</li>
+                            <li><strong>Clean final answers:</strong> No reasoning leaks to users</li>
+                            <li><strong>Easier debugging:</strong> State transitions and validation are explicit</li>
+                            <li><strong>Better maintainability:</strong> Rules can evolve in code, not embedded in prompts</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <h2 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-top: 30px;">Intended Limitations & Design Trade-offs</h2>
+                    
+                    <div style="background: #f8d7da; border-left: 4px solid #dc3545; padding: 15px; margin: 20px 0;">
+                        <h3 style="margin-top: 0;">Known Limitations (By Design):</h3>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>Restricted question types:</strong> Handles specific, well-defined query types rather than open-ended reasoning</li>
+                            <li><strong>Limited dataset:</strong> Demo uses a small CSV dataset</li>
+                            <li><strong>No open-ended reasoning:</strong> We don't support arbitrary multi-step reasoning chains (intentional)</li>
+                            <li><strong>Fixed tool set:</strong> Only predefined tools are available</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 20px 0;">
+                        <h3 style="margin-top: 0;">Why These Limitations Are Acceptable:</h3>
+                        <p><strong>This structure is more robust despite these limitations</strong> because:</p>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>Predictability:</strong> We know exactly what the system can and cannot do</li>
+                            <li><strong>Debugging:</strong> Issues can be traced through code paths</li>
+                            <li><strong>Testing:</strong> Each component can be tested in isolation</li>
+                            <li><strong>Evolution:</strong> New features are added through structured code changes</li>
+                            <li><strong>Production readiness:</strong> The system behaves consistently</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <h2 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-top: 30px;">OOP Principles Applied</h2>
+                    <ul style="margin-left: 20px;">
+                        <li><strong>Single Responsibility:</strong> Each class has one clear purpose</li>
+                        <li><strong>Separation of Decision & Action:</strong> Classes either decide or act, but not both (unless Agents)</li>
+                        <li><strong>Dependency Inversion:</strong> Dependencies are injected, not hardcoded</li>
+                        <li><strong>Encapsulation:</strong> Internal logic and state are properly encapsulated</li>
+                        <li><strong>Factory Pattern:</strong> Tools and components are created via factories</li>
+                        <li><strong>Strategy Pattern:</strong> Different question generators for quiz types</li>
+                    </ul>
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <h2 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-top: 30px;">Future Extensibility</h2>
+                    <p>The architecture is designed to grow. In production, the service can easily be extended with:</p>
+                    <ul style="margin-left: 20px;">
+                        <li>Additional tools (external APIs, vector search, RAG, analytics)</li>
+                        <li>More agents or collaborative workflows</li>
+                        <li>Persistent memory or user profiles</li>
+                        <li>Observability and guardrails</li>
+                    </ul>
+                    <p><strong>The key point:</strong> The architecture is designed to grow, not to be rewritten.</p>
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <h2 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-top: 30px;">Author</h2>
+                    <p>
+                        <strong>Alireza Barzin Zanganeh</strong><br>
+                        Website: <a href="https://www.zanganehai.com/about" target="_blank" style="color: #3498db; text-decoration: none;">zanganehai.com</a>
+                    </p>
+                </div>
             </div>
         </div>
     </div>

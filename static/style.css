@@ -54,6 +54,7 @@ header h1 {
     color: #666;
     transition: all 0.3s;
     border-bottom: 3px solid transparent;
+    position: relative;
 }
 
 .tab-button:hover {
@@ -65,6 +66,27 @@ header h1 {
     color: #667eea;
     border-bottom-color: #667eea;
     background: white;
+    font-weight: 700;
+}
+
+/* Make About tab more prominent with accent color */
+.tab-button-about {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white !important;
+    font-weight: 700;
+    font-size: 1.15em;
+}
+
+.tab-button-about:hover {
+    background: linear-gradient(135deg, #e085e8 0%, #e54a5f 100%);
+    color: white !important;
+}
+
+.tab-button-about.active {
+    background: white;
+    color: #f5576c !important;
+    border-bottom-color: #f5576c;
+    border-bottom-width: 4px;
 }
 
 .tab-content {
@@ -75,6 +97,31 @@ header h1 {
 
 .tab-content.active {
     display: block;
+}
+
+/* About tab specific styling */
+#about-tab {
+    max-height: calc(100vh - 250px);
+    overflow-y: auto;
+}
+
+#about-tab h2 {
+    color: #2c3e50;
+    border-bottom: 2px solid #667eea;
+    padding-bottom: 10px;
+    margin-top: 30px;
+}
+
+#about-tab h3 {
+    color: #34495e;
+    margin-top: 25px;
+}
+
+#about-tab code {
+    background: #f4f4f4;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
 }
 
 /* Chat Styles */
