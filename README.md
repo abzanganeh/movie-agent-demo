@@ -54,11 +54,15 @@ Configuration files (`config.encrypted` and `.master_key`) are gitignored and ne
 
 The chat interface supports:
 - Natural language movie search
+- Similarity search (e.g., "find more movies like this" after uploading a poster - automatically excludes the original movie)
+- Year-specific queries (e.g., "action movies in 2013", "comedies from 1990") with intelligent filtering
 - Recommendations and queries
 - Interactive quizzes
 - Rating comparisons (shows top-rated movies by category)
 - Actor, director, and year searches
 - Statistics queries with formatted output
+
+Search results are automatically deduplicated and filtered to match your exact criteria (year, genre, etc.).
 
 ### Image Analysis
 
@@ -68,7 +72,10 @@ Upload movie poster images (JPG, PNG, JPEG) to:
 - Infer genres from visual elements
 - Get confidence scores
 
-After analysis, you can ask questions about the movie in the chat interface.
+After analysis, you can ask questions about the movie in the chat interface. You can also ask for similar movies (e.g., "find more movies like this"), and the system will automatically:
+- Look up the movie's actual genres from the database
+- Search for movies with matching genres
+- Exclude the original movie from results
 
 ## API Endpoints
 
