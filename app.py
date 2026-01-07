@@ -324,6 +324,11 @@ def poster():
         return jsonify({"error": str(e)}), 500
 
 
+@app.route("/about")
+def about():
+    """Serve About page."""
+    return render_template("about.html")
+
 @app.route("/reset-config", methods=["POST"])
 def reset_config():
     """Reset configuration endpoint."""

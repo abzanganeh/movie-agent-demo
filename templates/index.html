@@ -15,7 +15,10 @@
                 <strong>Demo Version:</strong> This project uses a small movie dataset (CSV) for demonstration purposes only. 
                 Results may be limited compared to a full production database.
             </div>
-            <div style="text-align: right; margin-top: 10px;">
+            <div style="text-align: right; margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+                <a href="{{ url_for('about') }}" style="color: #3498db; text-decoration: none; font-weight: bold; font-size: 0.95em;">
+                    About This Project
+                </a>
                 <button onclick="resetConfig()" style="padding: 8px 16px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9em;">
                     Reset Config
                 </button>
