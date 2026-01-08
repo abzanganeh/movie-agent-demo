@@ -160,31 +160,8 @@ function renderStatisticsContent(content) {
     let html = '<div class="statistics-container">';
     
     // Check for different statistics types
-    if (content.includes('Highest Rated Movies:')) {
-        html += '<div class="statistics-header">Highest Rated Movies</div>';
-        const movieMatch = content.match(/Highest Rated Movies:\n\n([\s\S]*?)\n\nRating:/);
-        if (movieMatch) {
-            const movies = movieMatch[1].split('\n').filter(line => line.trim().startsWith('•'));
-            html += '<div class="statistics-list">';
-            movies.forEach(movie => {
-                const match = movie.match(/•\s*(.+?)\s*\((\d+)\)\s*-\s*Rating:\s*([\d.]+)\/10/);
-                if (match) {
-                    const [, title, year, rating] = match;
-                    html += `
-                        <div class="statistics-item">
-                            <div class="statistics-title">${escapeHtml(title)} (${year})</div>
-                            <div class="statistics-rating">⭐ ${rating}/10</div>
-                        </div>
-                    `;
-                }
-            });
-            html += '</div>';
-            const ratingMatch = content.match(/Rating:\s*([\d.]+)\/10/);
-            if (ratingMatch) {
-                html += `<div class="statistics-summary">Highest Rating: ${ratingMatch[1]}/10</div>`;
-            }
-        }
-    } else if (content.includes('Top') && content.includes('Highest Rated Movies:')) {
+    // IMPORTANT: Check "Top X Highest Rated Movies:" FIRST because it contains "Highest Rated Movies:" as substring
+    if (content.includes('Top') && content.includes('Highest Rated Movies:')) {
         html += '<div class="statistics-header">Top Rated Movies</div>';
         const topMatch = content.match(/Top (\d+) Highest Rated Movies:\n\n([\s\S]*)/);
         if (topMatch) {
@@ -208,6 +185,31 @@ function renderStatisticsContent(content) {
                 }
             });
             html += '</div>';
+        }
+    } else if (content.includes('Highest Rated Movies:') && !content.includes('Top')) {
+        // Single highest rated movie (not a list)
+        html += '<div class="statistics-header">Highest Rated Movies</div>';
+        const movieMatch = content.match(/Highest Rated Movies:\n\n([\s\S]*?)\n\nRating:/);
+        if (movieMatch) {
+            const movies = movieMatch[1].split('\n').filter(line => line.trim().startsWith('•'));
+            html += '<div class="statistics-list">';
+            movies.forEach(movie => {
+                const match = movie.match(/•\s*(.+?)\s*\((\d+)\)\s*-\s*Rating:\s*([\d.]+)\/10/);
+                if (match) {
+                    const [, title, year, rating] = match;
+                    html += `
+                        <div class="statistics-item">
+                            <div class="statistics-title">${escapeHtml(title)} (${year})</div>
+                            <div class="statistics-rating">⭐ ${rating}/10</div>
+                        </div>
+                    `;
+                }
+            });
+            html += '</div>';
+            const ratingMatch = content.match(/Rating:\s*([\d.]+)\/10/);
+            if (ratingMatch) {
+                html += `<div class="statistics-summary">Highest Rating: ${ratingMatch[1]}/10</div>`;
+            }
         }
     } else if (content.includes('Average Rating:')) {
         html += '<div class="statistics-header">Average Rating</div>';
